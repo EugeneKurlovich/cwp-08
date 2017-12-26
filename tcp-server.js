@@ -17,20 +17,20 @@ const server = net.createServer((client) => {
     async function handler(data, error) {
         if (!error) {
             switch (data.toString().split(separator)[0]) {
-                case "getWorkers" : {
-                    let res = await getWorkers();
-                    client.write(`getWorkers${separator}${JSON.stringify(res)}`);
+                case "getW" : {
+                    let res = await getW();
+                    client.write(`getW${separator}${JSON.stringify(res)}`);
                     break;
                 }
-                case "add" : {
+                case "addW" : {
                     startWorker(data.toString().split(separator)[1]);
-                    client.write(`add${separator }${workers[workers.length - 1].pid}${separator}${workers[workers.length - 1].startedOn}`);
+                    client.write(`addW${separator }${workers[workers.length - 1].pid}${separator}${workers[workers.length - 1].startedOn}`);
                     break;
                 }
-                case "remove" : {
+                case "removeW" : {
                     let index = workers.findIndex(worker => worker.pid == data.toString().split(separator)[1]);
                     let numbers = await getNumbers(workers[index]);
-                    client.write(`remove${separator}${workers[index].pid}${separator}${workers[index].startedOn}${separator}${numbers}`);
+                    client.write(`removeW${separator}${workers[index].pid}${separator}${workers[index].startedOn}${separator}${numbers}`);
                     fs.appendFile(workers[index].filename,  "]");
                     process.kill(workers[index].pid);
                     workers.splice(index, 1);
@@ -69,7 +69,7 @@ function getNumbers(worker) {
     })
 }
 
-async function getWorkers() {
+async function getW() {
     return new Promise(async (resolve) => {
         let res = [];
         for (i = 0; i < workers.length; i++) {
